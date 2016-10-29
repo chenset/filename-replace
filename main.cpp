@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
-#include<algorithm>
+#include <algorithm>
+#include <regex>
 
 using namespace std;
 
@@ -45,6 +46,20 @@ bool inArray(string str, string *start, string *last) {
     return false;
 }
 
+
+void movieProcess(const string &file) {
+    smatch what;
+    auto start = file.begin();
+    auto end = file.end();
+
+    std::cout << file << endl;
+    while (regex_search(start, end, what, regex("\\d+"))) {
+        std::cout << what[0] << std::endl;
+        start += what.position() + what.length();
+    }
+
+}
+
 int main(void) {
     string subPostfix[] = {"ssa", "ass", "smi", "str", "sub", "lrc", "sst", "txt", "xss", "psb", "ssb"};
     string moviePostfix[] = {"wmv", "asf", "asx", "rm", "rmvb", "mpg", "mpeg", "mpe", "3gp", "mov", "mp4", "m4v",
@@ -71,7 +86,6 @@ int main(void) {
             tmp = path + tmp;
             string ext = getExt(fileDir.name);
             transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-            std::cout << ext << endl;
 
             if (inArray(ext, begin(moviePostfix), end(moviePostfix))) {
                 movies.push_back(tmp);
@@ -87,5 +101,9 @@ int main(void) {
     std::cout << movies.size() << endl;
     std::cout << subs.size() << endl;
 
-    return 0;
+
+    for (auto i = movies.begin(); i != movies.end(); ++i) {
+        movieProcess(*i);
+    }
+
 }
