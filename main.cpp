@@ -2,15 +2,63 @@
 #include <io.h>
 #include <iostream>
 #include <string.h>
+#include <vector>
+#include<algorithm>
 
 using namespace std;
 
 
+/**
+ * 获取文件后缀名
+ * @param filename
+ * @return 获取不到返回 ""
+ */
+string getExt(const string &filename) {
+    char *ext;
+    string returnStr = "";
+    ext = strrchr(filename.c_str(), '.');
+    if (ext == nullptr) { return ""; }
+
+    int len = strlen(ext);
+    if (len < 2) { return ""; }
+
+    for (auto i = 0; i < len; ++i) {  // 去掉"."号
+        if (i == 0) { continue; }
+        returnStr += ext[i];
+    }
+
+    return returnStr;
+}
+
+/**
+ * @param str
+ * @param start  begin(arr[])
+ * @param last  end(arr[])
+ * @return
+ */
+bool inArray(string str, string *start, string *last) {
+    for (; start != last; ++start) {
+        if (str == *start) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main(void) {
+    string subPostfix[] = {"ssa", "ass", "smi", "str", "sub", "lrc", "sst", "txt", "xss", "psb", "ssb"};
+    string moviePostfix[] = {"wmv", "asf", "asx", "rm", "rmvb", "mpg", "mpeg", "mpe", "3gp", "mov", "mp4", "m4v",
+                             "avi",
+                             "mkv", "flv", "vob"};
+
+
+    inArray("mkv", begin(moviePostfix), end(moviePostfix));
+    vector<string> subs, movies;
+
     _finddata_t fileDir;
-    string path = "E:/1/";
-    char *dir = "E:/1/*";
-    long lfDir;
+    string path = "D:/test/";
+    char *dir = "D:/test/*";
+    int lfDir;
 
     if ((lfDir = _findfirst(dir, &fileDir)) != -1l) {
         do {
@@ -19,16 +67,25 @@ int main(void) {
                 continue;
             }
 
-//            printf("%s\n", fileDir.name);
             string tmp = fileDir.name;
-            string newFilename = path + tmp + "111";
             tmp = path + tmp;
-            cout << tmp.c_str() << endl;
-            cout << newFilename << endl;
-//            cout << rename(tmp.c_str(), newFilename.c_str()) << endl;
+            string ext = getExt(fileDir.name);
+            transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            std::cout << ext << endl;
+
+            if (inArray(ext, begin(moviePostfix), end(moviePostfix))) {
+                movies.push_back(tmp);
+            }
+            if (inArray(ext, begin(subPostfix), end(subPostfix))) {
+                subs.push_back(tmp);
+            }
         } while (_findnext(lfDir, &fileDir) == 0);
     }
     _findclose(lfDir);
+
+
+    std::cout << movies.size() << endl;
+    std::cout << subs.size() << endl;
 
     return 0;
 }
