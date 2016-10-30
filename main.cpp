@@ -141,7 +141,7 @@ int main(void) {
     char buf[1080];
     getcwd(buf, sizeof(buf));
     printf("current working directory : %s\n", buf);
-    return 0;
+//    return 0;
     string inputName = "[ANK-Raws] Guilty Crown - ## (BDrip 1920x1080 x264 FLAC Hi10P).ass";
     string outputName = "Guilty Crown 2011 EP## [BD 1920x1080 23.976fps AVC-yuv420p10 FLACx2] - yan04000985&VCB-Studio.ass";
     string subPostfix[] = {"ssa", "ass", "smi", "str", "sub", "lrc", "sst", "txt", "xss", "psb", "ssb"};
