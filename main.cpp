@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <regex>
 #include <fstream>
+#include <QApplication>
+#include "textfinder.h"
 
 using namespace std;
 
@@ -136,59 +138,64 @@ void subsProcess(const string &path, const string &file, const string &inputName
 
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+    Q_INIT_RESOURCE(textfinder);
+    QApplication app(argc, argv);
 
-    char buf[1080];
-    getcwd(buf, sizeof(buf));
-    printf("current working directory : %s\n", buf);
-//    return 0;
-    string inputName = "[ANK-Raws] Guilty Crown - ## (BDrip 1920x1080 x264 FLAC Hi10P).ass";
-    string outputName = "Guilty Crown 2011 EP## [BD 1920x1080 23.976fps AVC-yuv420p10 FLACx2] - yan04000985&VCB-Studio.ass";
-    string subPostfix[] = {"ssa", "ass", "smi", "str", "sub", "lrc", "sst", "txt", "xss", "psb", "ssb"};
-    string moviePostfix[] = {"wmv", "asf", "asx", "rm", "rmvb", "mpg", "mpeg", "mpe", "3gp", "mov", "mp4", "m4v",
-                             "avi",
-                             "mkv", "flv", "vob"};
+    TextFinder *textFinder = new TextFinder;
+    textFinder->show();
+
+    return app.exec();
+}
+/*
+string inputName = "[ANK-Raws] Guilty Crown - ## (BDrip 1920x1080 x264 FLAC Hi10P).ass";
+string outputName = "Guilty Crown 2011 EP## [BD 1920x1080 23.976fps AVC-yuv420p10 FLACx2] - yan04000985&VCB-Studio.ass";
+string subPostfix[] = {"ssa", "ass", "smi", "str", "sub", "lrc", "sst", "txt", "xss", "psb", "ssb"};
+string moviePostfix[] = {"wmv", "asf", "asx", "rm", "rmvb", "mpg", "mpeg", "mpe", "3gp", "mov", "mp4", "m4v",
+                         "avi",
+                         "mkv", "flv", "vob"};
 
 
-    inArray("mkv", begin(moviePostfix), end(moviePostfix));
-    vector<string> subs, movies;
+inArray("mkv", begin(moviePostfix), end(moviePostfix));
+vector<string> subs, movies;
 
-    _finddata_t fileDir;
-    string path = "D:/Guilty Crown/";
-    char *dir = "D:/Guilty Crown/*";
-    int lfDir;
+_finddata_t fileDir;
+string path = "D:/Guilty Crown/";
+char *dir = "D:/Guilty Crown/*";
+int lfDir;
 
-    if ((lfDir = _findfirst(dir, &fileDir)) != -1l) {
-        do {
-            if (strcmp(fileDir.name, ".") == 0 || strcmp(fileDir.name, "..") == 0 ||
-                (fileDir.attrib & _A_SUBDIR) != 0) {
-                continue;
-            }
+if ((lfDir = _findfirst(dir, &fileDir)) != -1l) {
+    do {
+        if (strcmp(fileDir.name, ".") == 0 || strcmp(fileDir.name, "..") == 0 ||
+            (fileDir.attrib & _A_SUBDIR) != 0) {
+            continue;
+        }
 
-            string tmp = fileDir.name;
-            tmp = path + tmp;
-            string ext = getExt(fileDir.name);
-            transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        string tmp = fileDir.name;
+        tmp = path + tmp;
+        string ext = getExt(fileDir.name);
+        transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-            if (inArray(ext, begin(moviePostfix), end(moviePostfix))) {
+        if (inArray(ext, begin(moviePostfix), end(moviePostfix))) {
 //                movies.push_back(tmp);
-                movies.push_back(fileDir.name);
-            }
-            if (inArray(ext, begin(subPostfix), end(subPostfix))) {
+            movies.push_back(fileDir.name);
+        }
+        if (inArray(ext, begin(subPostfix), end(subPostfix))) {
 //                subs.push_back(tmp);
-                subs.push_back(fileDir.name);
-            }
-        } while (_findnext(lfDir, &fileDir) == 0);
-    }
-    _findclose(lfDir);
+            subs.push_back(fileDir.name);
+        }
+    } while (_findnext(lfDir, &fileDir) == 0);
+}
+_findclose(lfDir);
 
 
-    for (auto i = movies.begin(); i != movies.end(); ++i) {
+for (auto i = movies.begin(); i != movies.end(); ++i) {
 //        movieProcess(*i);
-    }
+}
 
-    for (auto i = subs.begin(); i != subs.end(); ++i) {
-        subsProcess(path, *i, inputName, outputName);
-    }
+for (auto i = subs.begin(); i != subs.end(); ++i) {
+    subsProcess(path, *i, inputName, outputName);
+}
 
 }
+ */
