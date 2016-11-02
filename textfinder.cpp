@@ -52,14 +52,22 @@
 #include <QtWidgets>
 #include "textfinder.h"
 
+#include <QApplication>
+#include <QLineEdit>
+#include <QDragEnterEvent>
+#include <QFileInfo>
+#include <QMimeData>
+
+
 TextFinder::TextFinder(QWidget *parent)
-        : QWidget(parent)
-{
+        : QWidget(parent) {
+
     QWidget *formWidget = loadUiFile();
 
-    ui_findButton = findChild<QPushButton*>("findButton");
-    ui_textEdit = findChild<QTextEdit*>("textEdit");
-    ui_lineEdit = findChild<QLineEdit*>("lineEdit");
+    ui_findButton = findChild<QPushButton *>("findButton");
+    ui_textEdit = findChild<QTextEdit *>("textEdit");
+    ui_lineEdit = findChild<QLineEdit *>("lineEdit");
+    setAcceptDrops(false);
 
     QMetaObject::connectSlotsByName(this);
 
@@ -68,13 +76,12 @@ TextFinder::TextFinder(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(formWidget);
     setLayout(layout);
-
+    setAcceptDrops(true);
     setWindowTitle(tr("Text Finder"));
     isFirstTime = true;
 }
 
-QWidget* TextFinder::loadUiFile()
-{
+QWidget *TextFinder::loadUiFile() {
     QUiLoader loader;
 
     QFile file(":/forms/textfinder.ui");
@@ -86,8 +93,7 @@ QWidget* TextFinder::loadUiFile()
     return formWidget;
 }
 
-void TextFinder::loadTextFile()
-{
+void TextFinder::loadTextFile() {
     QFile inputFile(":/forms/input.txt");
     inputFile.open(QIODevice::ReadOnly);
     QTextStream in(&inputFile);
@@ -99,47 +105,75 @@ void TextFinder::loadTextFile()
     ui_textEdit->setUndoRedoEnabled(true);
 }
 
-void TextFinder::on_findButton_clicked()
-{
+void TextFinder::on_findButton_clicked() {
     QString searchString = ui_lineEdit->text();
     QTextDocument *document = ui_textEdit->document();
 
-    bool found = false;
+//    QMessageBox::information(this, "Empty Search Field",
+//                             "The search field is empty. Please enter a word and click Find.");
 
-    if (isFirstTime == false)
-        document->undo();
 
-    if (searchString.isEmpty()) {
-        QMessageBox::information(this, tr("Empty Search Field"),
-                                 "The search field is empty. Please enter a word and click Find.");
-    } else {
+//    QString fileName = QFileDialog::getOpenFileName(this,
+//                                                    "Open XML File 1", "/home", "XML Files (*.*)");
+//    ui_lineEdit->setText(fileName);
 
-        QTextCursor highlightCursor(document);
-        QTextCursor cursor(document);
+    QFileDialog dialog(this);
+    dialog.setDirectory(QDir::homePath());
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.setNameFilter("Text files (*.*)");
+    QStringList fileNames;
+    if (dialog.exec())
+        fileNames = dialog.selectedFiles();
 
-        cursor.beginEditBlock();
-
-        QTextCharFormat plainFormat(highlightCursor.charFormat());
-        QTextCharFormat colorFormat = plainFormat;
-        colorFormat.setForeground(Qt::red);
-
-        while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
-            highlightCursor = document->find(searchString, highlightCursor, QTextDocument::FindWholeWords);
-
-            if (!highlightCursor.isNull()) {
-                found = true;
-                highlightCursor.movePosition(QTextCursor::WordRight,
-                                             QTextCursor::KeepAnchor);
-                highlightCursor.mergeCharFormat(colorFormat);
-            }
-        }
-
-        cursor.endEditBlock();
-        isFirstTime = false;
-
-        if (found == false) {
-            QMessageBox::information(this, tr("Word Not Found"),
-                                     "Sorry, the word cannot be found.");
-        }
+    if (!fileNames.length()) {
+        QMessageBox::information(this, tr("Empty"),
+                                 "未选中任何文件!");
+        return;
     }
+    for (int i = 0; i < fileNames.length(); ++i) {
+        QMessageBox::information(this, tr("Empty"),
+                                 fileNames[i]);
+    }
+
+
+//    ui->File1Path->setText(file1Name);
+
+//    bool found = false;
+//
+//    if (isFirstTime == false)
+//        document->undo();
+//
+//    if (searchString.isEmpty()) {
+//        QMessageBox::information(this, tr("Empty Search Field"),
+//                                 "The search field is empty. Please enter a word and click Find.");
+//    } else {
+//
+//        QTextCursor highlightCursor(document);
+//        QTextCursor cursor(document);
+//
+//        cursor.beginEditBlock();
+//
+//        QTextCharFormat plainFormat(highlightCursor.charFormat());
+//        QTextCharFormat colorFormat = plainFormat;
+//        colorFormat.setForeground(Qt::red);
+//
+//        while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
+//            highlightCursor = document->find(searchString, highlightCursor, QTextDocument::FindWholeWords);
+//
+//            if (!highlightCursor.isNull()) {
+//                found = true;
+//                highlightCursor.movePosition(QTextCursor::WordRight,
+//                                             QTextCursor::KeepAnchor);
+//                highlightCursor.mergeCharFormat(colorFormat);
+//            }
+//        }
+//
+//        cursor.endEditBlock();
+//        isFirstTime = false;
+//
+//        if (found == false) {
+//            QMessageBox::information(this, tr("Word Not Found"),
+//                                     "Sorry, the word cannot be found.");
+//        }
+//    }
 }

@@ -51,30 +51,69 @@
 #ifndef TEXTFINDER_H
 #define TEXTFINDER_H
 
+#include <string>
+#include <iostream>
 #include <QWidget>
+#include <QApplication>
+#include <QLineEdit>
+#include <QDragEnterEvent>
+#include <QFileInfo>
+#include <QMimeData>
+
 
 class QPushButton;
+
 class QTextEdit;
+
 class QLineEdit;
 
-class TextFinder : public QWidget
-{
+class TextFinder : public QWidget {
 Q_OBJECT
 
 public:
     TextFinder(QWidget *parent = 0);
 
 private slots:
+
     void on_findButton_clicked();
 
 private:
-    QWidget* loadUiFile();
+    QWidget *loadUiFile();
+
     void loadTextFile();
 
     QPushButton *ui_findButton;
     QTextEdit *ui_textEdit;
     QLineEdit *ui_lineEdit;
     bool isFirstTime;
+
+protected:
+    virtual void dragEnterEvent(QDragEnterEvent *event) override {
+        if (event->mimeData()->hasUrls())
+            event->acceptProposedAction();
+    }
+
+    virtual void dragMoveEvent(QDragMoveEvent *event) override {
+        if (event->mimeData()->hasUrls())
+            event->acceptProposedAction();
+    }
+
+    virtual void dropEvent(QDropEvent *event) override {
+        if (event->mimeData()->hasUrls()) {
+            QList<QUrl> list = event->mimeData()->urls();
+            QFileInfo *fileInfo = nullptr;
+            QString sss;
+            for (int i = 0; i < list.length(); ++i) {
+                fileInfo = new QFileInfo(list.at(i).toLocalFile());
+                sss += fileInfo->absoluteFilePath();
+            }
+            delete fileInfo;
+//            QFileInfo *fileInfo = new QFileInfo(list.at(0).toLocalFile());
+//            std::cout << list.length() << std::endl;
+            ui_lineEdit->setText(sss);
+            event->acceptProposedAction();
+        }
+    }
 };
 
 #endif
