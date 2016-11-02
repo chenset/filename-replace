@@ -90,8 +90,8 @@ TextFinder::TextFinder(QWidget *parent)
     loadTextFile();
 
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(formWidget);
     layout->addWidget(m_pTableWidget);
+    layout->addWidget(formWidget);
     setLayout(layout);
 
 //    QTableView *view = new QTableView;
