@@ -105,9 +105,15 @@ protected:
             QList<QUrl> list = event->mimeData()->urls();
             QFileInfo *fileInfo = nullptr;
             QString sss;
+            m_pTableWidget->setRowCount(list.length());
             for (int i = 0; i < list.length(); ++i) {
                 fileInfo = new QFileInfo(list.at(i).toLocalFile());
                 sss += fileInfo->absoluteFilePath();
+
+                //insert data
+                m_pTableWidget->setItem(i, 0, new QTableWidgetItem("Hello"));
+                m_pTableWidget->setItem(i, 1, new QTableWidgetItem(fileInfo->absoluteFilePath()));
+
             }
             delete fileInfo;
 //            QFileInfo *fileInfo = new QFileInfo(list.at(0).toLocalFile());

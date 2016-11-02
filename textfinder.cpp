@@ -70,8 +70,8 @@ TextFinder::TextFinder(QWidget *parent)
 
     m_pTableWidget = new QTableWidget(this);
     m_pTableWidget->setRowCount(2);
-    m_pTableWidget->setColumnCount(3);
-    m_TableHeader<<"#"<<"Name"<<"Text";
+    m_pTableWidget->setColumnCount(2);
+    m_TableHeader << "#" << "file";
     m_pTableWidget->setHorizontalHeaderLabels(m_TableHeader);
     m_pTableWidget->verticalHeader()->setVisible(false);
     m_pTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -82,7 +82,8 @@ TextFinder::TextFinder(QWidget *parent)
     m_pTableWidget->setGeometry(QApplication::desktop()->screenGeometry());
 
     //insert data
-    m_pTableWidget->setItem(0, 1, new QTableWidgetItem("Hello"));
+//    m_pTableWidget->setItem(0, 1, new QTableWidgetItem("Hello"));
+//    m_pTableWidget->setItem(0, 0, new QTableWidgetItem("Hello"));
 
 
     QMetaObject::connectSlotsByName(this);
