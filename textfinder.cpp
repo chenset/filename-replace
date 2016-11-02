@@ -51,7 +51,7 @@
 #include <QtUiTools>
 #include <QtWidgets>
 #include "textfinder.h"
-
+#include <QTableView>
 #include <QApplication>
 #include <QLineEdit>
 #include <QDragEnterEvent>
@@ -67,7 +67,23 @@ TextFinder::TextFinder(QWidget *parent)
     ui_findButton = findChild<QPushButton *>("findButton");
     ui_textEdit = findChild<QTextEdit *>("textEdit");
     ui_lineEdit = findChild<QLineEdit *>("lineEdit");
-    setAcceptDrops(false);
+
+    m_pTableWidget = new QTableWidget(this);
+    m_pTableWidget->setRowCount(2);
+    m_pTableWidget->setColumnCount(3);
+    m_TableHeader<<"#"<<"Name"<<"Text";
+    m_pTableWidget->setHorizontalHeaderLabels(m_TableHeader);
+    m_pTableWidget->verticalHeader()->setVisible(false);
+    m_pTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_pTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_pTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_pTableWidget->setShowGrid(true);
+    m_pTableWidget->setStyleSheet("QTableView {selection-background-color: red;}");
+    m_pTableWidget->setGeometry(QApplication::desktop()->screenGeometry());
+
+    //insert data
+    m_pTableWidget->setItem(0, 1, new QTableWidgetItem("Hello"));
+
 
     QMetaObject::connectSlotsByName(this);
 
@@ -75,10 +91,37 @@ TextFinder::TextFinder(QWidget *parent)
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(formWidget);
+    layout->addWidget(m_pTableWidget);
     setLayout(layout);
+
+//    QTableView *view = new QTableView;
+//
+//    QStandardItemModel *mod = new QStandardItemModel(this);
+//    QStandardItem *it = new QStandardItem(QObject::tr("ID"));
+//    mod->setHorizontalHeaderItem(0, it);
+//    QStandardItem *it1 = new QStandardItem(QObject::tr("Name"));
+//    mod->setHorizontalHeaderItem(1, it1);
+//    QStandardItem *it2 = new QStandardItem(QObject::tr("City"));
+//    mod->setHorizontalHeaderItem(2, it2);
+//    QStandardItem *it3 = new QStandardItem(QObject::tr("Country"));
+//    mod->setHorizontalHeaderItem(3, it3);
+////and so on
+//    view->setModel(mod);
+//    view->show();
+
+//    QTableView *view = new QTableView;
+//    QStringListModel *model;
+//    view->setModel(model);
+//    view->show();
+//    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
+//    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Name"));
+//    model->setHeaderData(2, Qt::Horizontal, QObject::tr("City"));
+//    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Country"));
+
     setAcceptDrops(true);
     setWindowTitle(tr("Text Finder"));
     isFirstTime = true;
+
 }
 
 QWidget *TextFinder::loadUiFile() {

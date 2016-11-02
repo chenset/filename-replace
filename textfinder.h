@@ -59,7 +59,7 @@
 #include <QDragEnterEvent>
 #include <QFileInfo>
 #include <QMimeData>
-
+#include <QTableWidget>
 
 class QPushButton;
 
@@ -85,6 +85,8 @@ private:
     QPushButton *ui_findButton;
     QTextEdit *ui_textEdit;
     QLineEdit *ui_lineEdit;
+    QTableWidget *m_pTableWidget;
+    QStringList m_TableHeader;
     bool isFirstTime;
 
 protected:
