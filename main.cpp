@@ -120,8 +120,8 @@ void subsProcess(const string &path, const string &file, const string &inputName
 
     string strNum = file.substr(inputName.find(matchRepeat), inputMatchLen);
     string NewFilename = path + regex_replace(outputName, regex(matchRepeat), strNum);
-    std::cout << " ---------------------------------------------------------- " << endl;
-    std::cout << path + file + "\r\nrename to:\r\n" + NewFilename << endl;
+//    std::cout << " ---------------------------------------------------------- " << endl;
+//    std::cout << path + file + "\r\nrename to:\r\n" + NewFilename << endl;
     rename((path + file).c_str(), NewFilename.c_str());
 
     return;
