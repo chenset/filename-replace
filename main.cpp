@@ -49,18 +49,18 @@ bool inArray(string str, string *start, string *last) {
     return false;
 }
 
-void movieProcess(const string &file) {
-    smatch what;
-    auto start = file.begin();
-    auto end = file.end();
-
-    std::cout << file << endl;
-    while (regex_search(start, end, what, regex("\\d+"))) {
-        std::cout << what[0] << std::endl;
-        start += what.position() + what.length();
-    }
-
-}
+//void movieProcess(const string &file) {
+//    smatch what;
+//    auto start = file.begin();
+//    auto end = file.end();
+//
+////    std::cout << file << endl;
+//    while (regex_search(start, end, what, regex("\\d+"))) {
+////        std::cout << what[0] << std::endl;
+//        start += what.position() + what.length();
+//    }
+//
+//}
 
 vector<string> strSplit(const string &str, const string &split) {
     vector<string> res;
@@ -130,7 +130,7 @@ void subsProcess(const string &path, const string &file, const string &inputName
     auto start = file.begin();
     auto end = file.end();
 
-    std::cout << file << endl;
+//    std::cout << file << endl;
     while (regex_search(start, end, what, regex("\\d+"))) {
         std::cout << what[0] << std::endl;
         start += what.position() + what.length();
