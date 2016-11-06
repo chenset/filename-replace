@@ -1,53 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include <QtUiTools>
 #include <QtWidgets>
 #include "textfinder.h"
@@ -57,6 +7,7 @@
 #include <QDragEnterEvent>
 #include <QFileInfo>
 #include <QMimeData>
+#include <regex>
 
 
 TextFinder::TextFinder(QWidget *parent)
@@ -157,7 +108,7 @@ QWidget *TextFinder::loadUiFile() {
 //}
 
 void TextFinder::on_findButton_clicked() {
-    QString searchString = ui_lineEdit->text();
+    std::string renameTo = ui_lineEdit->text().toStdString();
 //    QTextDocument *document = ui_textEdit->document();
 
 //    QMessageBox::information(this, "Empty Search Field",
@@ -168,23 +119,99 @@ void TextFinder::on_findButton_clicked() {
 //                                                    "Open XML File 1", "/home", "XML Files (*.*)");
 //    ui_lineEdit->setText(fileName);
 
-    QFileDialog dialog(this);
-    dialog.setDirectory(QDir::homePath());
-    dialog.setFileMode(QFileDialog::ExistingFiles);
-    dialog.setNameFilter("Text files (*.*)");
-    QStringList fileNames;
-    if (dialog.exec())
-        fileNames = dialog.selectedFiles();
-
-    if (!fileNames.length()) {
-        QMessageBox::information(this, tr("Empty"),
-                                 "未选中任何文件!");
+    if (file_list.empty()) {
+        QMessageBox::information(this, "内容为空", "请先将文件拖拽到程序中!");
         return;
     }
-    for (int i = 0; i < fileNames.length(); ++i) {
-        QMessageBox::information(this, tr("Empty"),
-                                 fileNames[i]);
+
+    if (renameTo.empty()) {
+        QMessageBox::information(this, "内容为空", "请输入重命名后的文件名!");
+        return;
     }
+
+
+
+
+
+//
+//    std::smatch outputMatch;
+//    if (!regex_search(outputName, outputMatch, std::regex("#+"))) {
+//        return;
+//    }
+
+
+    std::smatch inputMatch;
+    if (!regex_search(renameTo, inputMatch, std::regex("#+"))) {
+        QMessageBox::information(this, "内容为空", "# is empty!");
+        return;
+    }
+
+    unsigned inputMatchLen = (unsigned) inputMatch[0].length();
+    std::string matchRepeat(inputMatchLen, '#');
+//
+//    std::string strNum = file.substr(renameTo.find(matchRepeat), inputMatchLen);
+
+    std::string NewFilename =  regex_replace(renameTo, std::regex(matchRepeat), "2");
+
+
+    std::cout << NewFilename << std::endl;
+//    std::cout << " ---------------------------------------------------------- " << endl;
+//    std::cout << path + file + "\r\nrename to:\r\n" + NewFilename << endl;
+//    rename((path + file).c_str(), NewFilename.c_str());
+
+
+    return;
+/*
+    QFileInfo *file = nullptr;
+
+    int res;//todo list
+
+    for (int i = 0; i < file_list.length(); ++i) {
+        file = new QFileInfo(file_list[i].toLocalFile());
+
+
+        res = rename(file->absoluteFilePath().toStdString().c_str(),
+                     (file->absolutePath() + "/" + renameTo).toStdString().c_str());
+
+        std::cout << res << std::endl;
+
+        std::cout << file->absoluteFilePath().toStdString().c_str() << std::endl;
+        std::cout << (file->absolutePath() + "/" + renameTo).toStdString().c_str() << std::endl;
+
+    }
+
+    QMessageBox::information(this, "内容为空", res == 0 ? "成功" : "失败");
+
+    delete file;
+
+    */
+//    QMessageBox::information(this, "内容为空", file->absoluteFilePath());
+//    QMessageBox::information(this, "内容为空", file->absolutePath());
+//    QMessageBox::information(this, "内容为空", file->filePath());
+//
+
+//    rename((path + file).c_str(), NewFilename.c_str());
+
+//    std::cout << file->absoluteFilePath() << std::endl;
+//    QMessageBox::information(this,"title",QString::number());
+
+//    QFileDialog dialog(this);
+//    dialog.setDirectory(QDir::homePath());
+//    dialog.setFileMode(QFileDialog::ExistingFiles);
+//    dialog.setNameFilter("Text files (*.*)");
+//    QStringList fileNames;
+//    if (dialog.exec())
+//        fileNames = dialog.selectedFiles();
+//
+//    if (!fileNames.length()) {
+//        QMessageBox::information(this, tr("Empty"),
+//                                 "未选中任何文件!");
+//        return;
+//    }
+//    for (int i = 0; i < fileNames.length(); ++i) {
+//        QMessageBox::information(this, tr("Empty"),
+//                                 fileNames[i]);
+//    }
 
 
 //    ui->File1Path->setText(file1Name);
