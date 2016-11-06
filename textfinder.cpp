@@ -63,22 +63,29 @@ TextFinder::TextFinder(QWidget *parent)
         : QWidget(parent) {
 
     QWidget *formWidget = loadUiFile();
+//    this->setFixedWidth(700);
+    this->setMinimumSize(700, 500);
 
     ui_findButton = findChild<QPushButton *>("findButton");
-    ui_textEdit = findChild<QTextEdit *>("textEdit");
+//    ui_textEdit = findChild<QTextEdit *>("textEdit");
     ui_lineEdit = findChild<QLineEdit *>("lineEdit");
 
     m_pTableWidget = new QTableWidget(this);
     m_pTableWidget->setRowCount(2);
     m_pTableWidget->setColumnCount(2);
     m_TableHeader << "#" << "file";
+    m_pTableWidget->setColumnWidth(0, 40);
+    m_pTableWidget->setColumnWidth(1, 636);
     m_pTableWidget->setHorizontalHeaderLabels(m_TableHeader);
-    m_pTableWidget->verticalHeader()->setVisible(false);
+    QHeaderView *m_tableTopHeader = m_pTableWidget->verticalHeader();
+    m_tableTopHeader->setVisible(false);
+
+    m_pTableWidget->setStyleSheet("QHeaderView::section { background-color:#DDDDDD}");
     m_pTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_pTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_pTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     m_pTableWidget->setShowGrid(true);
-    m_pTableWidget->setStyleSheet("QTableView {selection-background-color: red;}");
+    m_pTableWidget->setStyleSheet("QTableView {selection-background-color: #f2f2f2;}");
     m_pTableWidget->setGeometry(QApplication::desktop()->screenGeometry());
 
     //insert data
@@ -88,7 +95,7 @@ TextFinder::TextFinder(QWidget *parent)
 
     QMetaObject::connectSlotsByName(this);
 
-    loadTextFile();
+//    loadTextFile();
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_pTableWidget);
@@ -128,7 +135,7 @@ TextFinder::TextFinder(QWidget *parent)
 QWidget *TextFinder::loadUiFile() {
     QUiLoader loader;
 
-    QFile file(":/forms/textfinder.ui");
+    QFile file(":/forms/textfinder.xml");
     file.open(QFile::ReadOnly);
 
     QWidget *formWidget = loader.load(&file, this);
@@ -137,21 +144,21 @@ QWidget *TextFinder::loadUiFile() {
     return formWidget;
 }
 
-void TextFinder::loadTextFile() {
-    QFile inputFile(":/forms/input.txt");
-    inputFile.open(QIODevice::ReadOnly);
-    QTextStream in(&inputFile);
-    QString line = in.readAll();
-    inputFile.close();
-
-    ui_textEdit->append(line);
-    ui_textEdit->setUndoRedoEnabled(false);
-    ui_textEdit->setUndoRedoEnabled(true);
-}
+//void TextFinder::loadTextFile() {
+//    QFile inputFile(":/forms/input.txt");
+//    inputFile.open(QIODevice::ReadOnly);
+//    QTextStream in(&inputFile);
+//    QString line = in.readAll();
+//    inputFile.close();
+//
+//    ui_textEdit->append(line);
+//    ui_textEdit->setUndoRedoEnabled(false);
+//    ui_textEdit->setUndoRedoEnabled(true);
+//}
 
 void TextFinder::on_findButton_clicked() {
     QString searchString = ui_lineEdit->text();
-    QTextDocument *document = ui_textEdit->document();
+//    QTextDocument *document = ui_textEdit->document();
 
 //    QMessageBox::information(this, "Empty Search Field",
 //                             "The search field is empty. Please enter a word and click Find.");

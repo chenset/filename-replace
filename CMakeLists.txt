@@ -20,7 +20,7 @@ add_executable(
         main
         textfinder.cpp
         textfinder.h
-        forms/textfinder.ui
+#        forms/textfinder.xml
         textfinder.qrc
         main.cpp
         forms/input.txt
