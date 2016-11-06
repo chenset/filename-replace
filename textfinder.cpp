@@ -151,7 +151,8 @@ void TextFinder::on_findButton_clicked() {
 //
 //    std::string strNum = file.substr(renameTo.find(matchRepeat), inputMatchLen);
 
-    std::string NewFilename =  regex_replace(renameTo, std::regex(matchRepeat), "2");
+    std::string pad(inputMatchLen - 1, '0'); //todo 1 has to modify, and test if inputMatchLen = 0
+    std::string NewFilename = regex_replace(renameTo, std::regex(matchRepeat), pad + "2");
 
 
     std::cout << NewFilename << std::endl;
