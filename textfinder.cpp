@@ -166,8 +166,10 @@ void TextFinder::on_findButton_clicked() {
 
         file = new QFileInfo(file_list[i].toLocalFile());
 
-        rename(file->absoluteFilePath().toStdString().c_str(),
-                     (file->absolutePath().toStdString() + "/" + NewFilename).c_str());
+        QFile::rename(file->absoluteFilePath(),QString::fromStdString(file->absolutePath().toStdString() + "/" + NewFilename));
+        
+//        rename(file->absoluteFilePath().toStdString().c_str(),
+//                     (file->absolutePath().toStdString() + "/" + NewFilename).c_str());
 
         std::cout << file->absoluteFilePath().toStdString().c_str() << std::endl;
         std::cout << (file->absolutePath().toStdString() + "/" + NewFilename).c_str() << std::endl;
