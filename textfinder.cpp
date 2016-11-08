@@ -15,7 +15,7 @@ TextFinder::TextFinder(QWidget *parent)
 
     QWidget *formWidget = loadUiFile();
 //    this->setFixedWidth(700);
-    this->setMinimumSize(700, 500);
+    this->setMinimumSize(900, 500);
 
     ui_findButton = findChild<QPushButton *>("findButton");
 //    ui_textEdit = findChild<QTextEdit *>("textEdit");
@@ -26,7 +26,7 @@ TextFinder::TextFinder(QWidget *parent)
     m_pTableWidget->setColumnCount(2);
     m_TableHeader << "#" << "file";
     m_pTableWidget->setColumnWidth(0, 40);
-    m_pTableWidget->setColumnWidth(1, 636);
+    m_pTableWidget->setColumnWidth(1, 836);
     m_pTableWidget->setHorizontalHeaderLabels(m_TableHeader);
     QHeaderView *m_tableTopHeader = m_pTableWidget->verticalHeader();
     m_tableTopHeader->setVisible(false);
@@ -151,14 +151,29 @@ void TextFinder::on_findButton_clicked() {
 //
 //    std::string strNum = file.substr(renameTo.find(matchRepeat), inputMatchLen);
 
-    std::string pad(inputMatchLen - 1, '0'); //todo 1 has to modify, and test if inputMatchLen = 0
-    std::string NewFilename = regex_replace(renameTo, std::regex(matchRepeat), pad + "2");
+    QFileInfo *file = nullptr;
 
+    for (int i = 0; i < file_list.length(); ++i) {
+        int padLen = inputMatchLen - QString::number(i + 1).toStdString().length();
+        if (padLen < 0) {
+            padLen = 0;
+        }
+        unsigned unsignedPadLen = (unsigned) padLen;
+        std::string pad(unsignedPadLen, '0');
+        std::string NewFilename = regex_replace(renameTo, std::regex(matchRepeat),
+                                                pad + QString::number(i + 1).toStdString());
+        std::cout << NewFilename << std::endl;
 
-    std::cout << NewFilename << std::endl;
-//    std::cout << " ---------------------------------------------------------- " << endl;
-//    std::cout << path + file + "\r\nrename to:\r\n" + NewFilename << endl;
-//    rename((path + file).c_str(), NewFilename.c_str());
+        file = new QFileInfo(file_list[i].toLocalFile());
+
+        rename(file->absoluteFilePath().toStdString().c_str(),
+                     (file->absolutePath().toStdString() + "/" + NewFilename).c_str());
+
+        std::cout << file->absoluteFilePath().toStdString().c_str() << std::endl;
+        std::cout << (file->absolutePath().toStdString() + "/" + NewFilename).c_str() << std::endl;
+    }
+
+    delete file;
 
 
     return;
